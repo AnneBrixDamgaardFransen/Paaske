@@ -15,25 +15,25 @@ public class Game
         Room outside, theater, pub, lab, office;
       
         // create the rooms
-        outside = new Room("outside the main entrance of the university");
-        theater = new Room("in a lecture theater");
-        pub = new Room("in the campus pub");
-        lab = new Room("in a computing lab");
-        office = new Room("in the computing admin office");
+        outside = new Room("Uden foran IT universitet ");
+        theater = new Room("I forlæsningssalen");
+        pub = new Room("I fredagsbaren");
+        lab = new Room("I computer lab");
+        office = new Room("I administrationen");
         
         // initialise room exits
-        outside.setExit("east", theater);
-        outside.setExit("south", lab);
-        outside.setExit("west", pub);
+        outside.setExit("øst", theater);
+        outside.setExit("syd", lab);
+        outside.setExit("vest", pub);
 
-        theater.setExit("west", outside);
+        theater.setExit("vest", outside);
 
-        pub.setExit("east", outside);
+        pub.setExit("øst", outside);
 
-        lab.setExit("north", outside);
-        lab.setExit("east", office);
+        lab.setExit("nord", outside);
+        lab.setExit("øst", office);
 
-        office.setExit("west", lab);
+        office.setExit("vest", lab);
 
         currentRoom = outside;  // start game outside
     }
@@ -51,15 +51,16 @@ public class Game
             Command command = parser.getCommand();
             finished = processCommand(command);
         }
-        System.out.println("Thank you for playing.  Good bye.");
+        System.out.println("Tak fordi du spilled med");
     }
 
     private void printWelcome()
     {
         System.out.println();
-        System.out.println("Welcome to the World of Zuul!");
-        System.out.println("World of Zuul is a new, incredibly boring adventure game.");
-        System.out.println("Type 'help' if you need help.");
+        System.out.println("Velkommen til påskejagt på IT universitetet");
+        System.out.println("Du skal rundt i de foreksllige rum, hver gang du kommer ind i et rum samler du et æg op.");
+        System.out.println("Skriv 'hjælp' hvis du har brug for hjælp.");
+        Paaske.printPaaske();
         System.out.println();
         System.out.println(currentRoom.getLongDescription());
     }
@@ -69,18 +70,20 @@ public class Game
         boolean wantToQuit = false;
 
         if(command.isUnknown()) {
-            System.out.println("I don't know what you mean...");
+            System.out.println("Jeg ved ikke hvad du mener...");
             return false;
         }
 
         String commandWord = command.getCommandWord();
-        if (commandWord.equals("help")) {
+        if (commandWord.equals("hjælp")) {
             printHelp();
         }
-        else if (commandWord.equals("go")) {
+        else if (commandWord.equals("gå")) {
             goRoom(command);
+            Paaske.pusPaaske();
+            Paaske.printPaaske();
         }
-        else if (commandWord.equals("quit")) {
+        else if (commandWord.equals("slut")) {
             wantToQuit = quit(command);
         }
         // else command not recognised.
@@ -90,10 +93,9 @@ public class Game
 
     private void printHelp() 
     {
-        System.out.println("You are lost. You are alone. You wander");
-        System.out.println("around at the university.");
+        System.out.println("Du skal finde en dør og finde påskeæg");
         System.out.println();
-        System.out.println("Your command words are:");
+        System.out.println("Du kan skrive følgende:");
         parser.showCommands();
     }
 
@@ -101,7 +103,7 @@ public class Game
     {
         if(!command.hasSecondWord()) {
             // if there is no second word, we don't know where to go...
-            System.out.println("Go where?");
+            System.out.println("Gå hvor hen?");
             return;
         }
 
@@ -111,7 +113,7 @@ public class Game
         Room nextRoom = currentRoom.getExit(direction);
 
         if (nextRoom == null) {
-            System.out.println("There is no door!");
+            System.out.println("Der er ingen dør!");
         }
         else {
             currentRoom = nextRoom;
@@ -122,11 +124,20 @@ public class Game
     private boolean quit(Command command) 
     {
         if(command.hasSecondWord()) {
-            System.out.println("Quit what?");
+            System.out.println("Slut hvad?");
             return false;
         }
         else {
+            if(Paaske.getTæller() > 4){
+            System.out.println("Tillykke du har samlet mere end 4 påskeæg og kan nu sluttet spillet og påskehygge");
             return true;  // signal that we want to quit
+            }
+            else {
+                System.out.println("Du har desværre ikke samlet nok påskeæg til at kunne sluttet spillet endnu.");
+                System.out.println("Du skal mindst have samlet 4 påskeæg");
+
+                return false;
+            }
         }
     }
 }

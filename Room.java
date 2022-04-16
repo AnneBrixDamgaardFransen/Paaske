@@ -24,13 +24,13 @@ public class Room
 
     public String getLongDescription()
     {
-        return "You are " + description + ".\n" + getExitString();
+        return "Du er her: " + description + ".\n" + getExitString();
     }
 
 
     private String getExitString()
     {
-        String returnString = "Exits:";
+        String returnString = "Udgange:";
         Set<String> keys = exits.keySet();
         for(String exit : keys) {
             returnString += " " + exit;
